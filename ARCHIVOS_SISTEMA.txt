@@ -1,0 +1,70 @@
+====================================================================
+SISTEMA DE ANÁLISIS IRU - ARCHIVOS CREADOS
+====================================================================
+
+SCRIPTS PRINCIPALES DE ANÁLISIS:
+---------------------------------
+✓ analisis_acp_clustering.R     (18 KB) - ACP robusto y clustering
+✓ convertir_shapefile.py        (12 KB) - Conversión shapefile a GeoJSON
+✓ dashboard_iru.R               (26 KB) - Dashboard interactivo Shiny
+
+SCRIPTS DE EJECUCIÓN:
+---------------------
+✓ ejecutar_analisis_completo.sh  (3.8 KB) - Ejecuta todo el proceso
+✓ ejecutar_solo_analisis.sh      (1.2 KB) - Solo análisis sin dashboard
+✓ ejecutar_dashboard.sh          (1.2 KB) - Solo dashboard
+✓ instalar_dependencias.sh       (2.2 KB) - Instala todas las dependencias
+✓ verificar_sistema.sh           (8.1 KB) - Verifica que todo esté listo
+
+SCRIPTS DE INSTALACIÓN:
+-----------------------
+✓ instalar_dependencias.R       (3.4 KB) - Instala librerías de R
+
+DOCUMENTACIÓN:
+--------------
+✓ README_SISTEMA.md             (12 KB) - Documentación completa
+✓ INICIO_RAPIDO.md              (3.2 KB) - Guía de inicio rápido
+✓ ARCHIVOS_SISTEMA.txt          (Este archivo) - Resumen de archivos
+
+TOTAL: 11 archivos creados
+====================================================================
+
+FLUJO DE EJECUCIÓN RECOMENDADO:
+================================
+
+1. Primera vez - Instalar dependencias:
+   ./instalar_dependencias.sh
+
+2. Verificar que todo está listo:
+   ./verificar_sistema.sh
+
+3. Ejecutar análisis completo:
+   ./ejecutar_analisis_completo.sh
+
+4. Después (si solo quiere ver el dashboard):
+   ./ejecutar_dashboard.sh
+
+====================================================================
+
+ARCHIVOS DE ENTRADA REQUERIDOS:
+================================
+- IRUSCV3.dbf
+- Indicadores.xlsx
+- Sectores Catastrales/SECTOR_URBANO/SECTOR_URBANO.shp (y archivos auxiliares)
+
+ARCHIVOS DE SALIDA (directorio resultados/):
+============================================
+- datos_con_clusters.csv
+- sectores_clusters.csv
+- resultados_acp.json
+- resultados_clustering.json
+- sectores_geojson.json
+- resumen_clusters.json
+- grafico_varianza_explicada.png
+- biplot_acp.png
+- metodo_codo.png
+- silueta.png
+- varianza_entre_grupos.png
+- heatmap_clusters.png
+
+====================================================================
