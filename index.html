@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard IRU - Índice de Revitalización Urbana</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-primary shadow-sm">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+                <i class="fas fa-city"></i>
+                Dashboard IRU - Índice de Revitalización Urbana
+            </span>
+            <span class="text-white">
+                <i class="fas fa-database"></i>
+                <span id="sector-count">0</span> Sectores Catastrales
+            </span>
+        </div>
+    </nav>
+
+    <!-- Loading Spinner -->
+    <div id="loading" class="text-center mt-5">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-3">Cargando datos...</p>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="container-fluid mt-4" style="display: none;">
+
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card stat-card stat-card-primary">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2 text-muted">Total Sectores</h6>
+                                <h2 class="card-title mb-0" id="stat-total">0</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-map-marked-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card stat-card stat-card-success">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2 text-muted">IRU Promedio</h6>
+                                <h2 class="card-title mb-0" id="stat-avg">0.000</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card stat-card stat-card-info">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2 text-muted">IRU Máximo</h6>
+                                <h2 class="card-title mb-0" id="stat-max">0.000</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card stat-card stat-card-warning">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2 text-muted">IRU Mínimo</h6>
+                                <h2 class="card-title mb-0" id="stat-min">0.000</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                    <i class="fas fa-home"></i> Resumen General
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="ejes-tab" data-bs-toggle="tab" data-bs-target="#ejes" type="button" role="tab">
+                    <i class="fas fa-project-diagram"></i> Análisis por Ejes
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="ambitos-tab" data-bs-toggle="tab" data-bs-target="#ambitos" type="button" role="tab">
+                    <i class="fas fa-layer-group"></i> Ámbitos
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="rankings-tab" data-bs-toggle="tab" data-bs-target="#rankings" type="button" role="tab">
+                    <i class="fas fa-trophy"></i> Rankings
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="data-tab" data-bs-toggle="tab" data-bs-target="#data" type="button" role="tab">
+                    <i class="fas fa-table"></i> Explorar Datos
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="dashboardTabContent">
+
+            <!-- Tab 1: Overview -->
+            <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                <div class="row mt-4">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Distribución del IRU</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="iruHistogram"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-medal"></i> Top 10 Sectores - Mayor IRU</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="topSectoresChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-boxes"></i> Distribución por Ejes (E1, E2, E3)</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="ejesBoxplot"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Ejes -->
+            <div class="tab-pane fade" id="ejes" role="tabpanel">
+                <div class="row mt-4">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-chart-scatter"></i> Relación E1 vs E2</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="ejesScatter"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-chart-pie"></i> Promedio de Ejes</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="ejesPie"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-chart-area"></i> Top 20 Sectores - Comparación de Ejes</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="ejesComparison"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Ámbitos -->
+            <div class="tab-pane fade" id="ambitos" role="tabpanel">
+                <div class="row mt-4">
+                    <div class="col-12 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2">Seleccionar Sector:</h6>
+                                <select id="sectorSelect" class="form-select">
+                                    <option value="">Cargando sectores...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-spider"></i> Ámbitos del Sector (Radar)</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="ambitosRadar"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Valores de Ámbitos (A1-A10)</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="ambitosBar"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Rankings -->
+            <div class="tab-pane fade" id="rankings" role="tabpanel">
+                <div class="row mt-4">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-arrow-up"></i> Top 10 - Mayor IRU</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="topTable">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Código</th>
+                                                <th>Sector</th>
+                                                <th>IRU</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 mb-4">
+                        <div class="card">
+                            <div class="card-header bg-warning text-dark">
+                                <h5 class="mb-0"><i class="fas fa-arrow-down"></i> Top 10 - Menor IRU</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="bottomTable">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Código</th>
+                                                <th>Sector</th>
+                                                <th>IRU</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-filter"></i> Filtro por Rango de IRU</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="iruRangeSlider" class="form-label">
+                                        Rango: <span id="rangeMin">0.000</span> - <span id="rangeMax">1.000</span>
+                                    </label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <input type="range" class="form-range" id="iruMinSlider" min="0" max="100" value="0">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="range" class="form-range" id="iruMaxSlider" min="0" max="100" value="100">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-info" role="alert">
+                                    <i class="fas fa-info-circle"></i>
+                                    Sectores en rango: <strong id="filteredCount">0</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 5: Data Table -->
+            <div class="tab-pane fade" id="data" role="tabpanel">
+                <div class="row mt-4">
+                    <div class="col-12 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <input type="text" class="form-control" id="searchInput" placeholder="Buscar por código o nombre...">
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <select class="form-select" id="sortSelect">
+                                            <option value="IRU-desc">IRU (Mayor a Menor)</option>
+                                            <option value="IRU-asc">IRU (Menor a Mayor)</option>
+                                            <option value="CodSec-asc">Código (A-Z)</option>
+                                            <option value="SCaNombre-asc">Nombre (A-Z)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <button class="btn btn-primary w-100" onclick="exportToCSV()">
+                                            <i class="fas fa-download"></i> Exportar CSV
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-database"></i> Datos de Sectores Catastrales</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover" id="dataTable">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>Código</th>
+                                                <th>Nombre</th>
+                                                <th>E1</th>
+                                                <th>E2</th>
+                                                <th>E3</th>
+                                                <th>IRU</th>
+                                                <th>Área (ha)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                                <nav>
+                                    <ul class="pagination justify-content-center" id="pagination"></ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center text-muted py-3 mt-5">
+        <div class="container">
+            <p class="mb-0">Dashboard IRU - Índice de Revitalización Urbana &copy; 2024</p>
+            <p class="mb-0"><small>Desarrollado con HTML5, CSS3, JavaScript y Chart.js</small></p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="js/app.js"></script>
+</body>
+</html>
